@@ -39,14 +39,16 @@ const createCampaign = async (req, res) => {
     }
 };
 
-// Get All Campaigns for Advertiser
+// Get All Campaigns
 const getAllCampaigns = async (req, res) => {
     try {
-        const campaigns = await Campaign.find({ advertiser: req.user.userId })
-            .select('campaignName campaignType status analytics');
+        const campaigns = await Campaign.find()
+            .select('campaignName campaignType status analytics headline body callToAction imageUrl')
+            .sort({ createdAt: -1 });
         
         res.json(campaigns);
     } catch (error) {
+        console.error('Error fetching campaigns:', error);
         res.status(500).json({ message: 'Error fetching campaigns' });
     }
 };
@@ -54,10 +56,8 @@ const getAllCampaigns = async (req, res) => {
 // Get Campaign Details
 const getCampaign = async (req, res) => {
     try {
-        const campaign = await Campaign.findOne({
-            _id: req.params.id,
-            advertiser: req.user.userId
-        });
+        const campaign = await Campaign.findById(req.params.id)
+            .select('campaignName campaignType status analytics headline body callToAction imageUrl');
 
         if (!campaign) {
             return res.status(404).json({ message: 'Campaign not found' });
@@ -65,6 +65,7 @@ const getCampaign = async (req, res) => {
 
         res.json(campaign);
     } catch (error) {
+        console.error('Error fetching campaign:', error);
         res.status(500).json({ message: 'Error fetching campaign' });
     }
 };

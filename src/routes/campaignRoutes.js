@@ -13,7 +13,31 @@ const {
 } = require('../controllers/campaignController');
 
 // Configure multer for file upload
-const upload = multer({ dest: 'uploads/' });
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split('.').pop());
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Not an image! Please upload an image.'), false);
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    }
+});
 
 /**
  * @swagger
@@ -123,10 +147,8 @@ router.post('/', isAuth, checkRole(['ADVERTISER']), upload.single('image'), crea
  * @swagger
  * /api/campaigns:
  *   get:
- *     summary: Get all campaigns for the advertiser
+ *     summary: Get all campaigns
  *     tags: [Campaigns]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of campaigns
@@ -136,10 +158,6 @@ router.post('/', isAuth, checkRole(['ADVERTISER']), upload.single('image'), crea
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Campaign'
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden
  */
 router.get('/', getAllCampaigns);
 
@@ -149,8 +167,6 @@ router.get('/', getAllCampaigns);
  *   get:
  *     summary: Get campaign details
  *     tags: [Campaigns]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -164,10 +180,6 @@ router.get('/', getAllCampaigns);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Campaign'
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden
  *       404:
  *         description: Campaign not found
  */
