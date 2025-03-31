@@ -28,6 +28,10 @@ const swaggerOptions = {
                 url: `http://localhost:${process.env.PORT || 3001}`,
                 description: 'Development server',
             },
+            {
+                url: 'https://advertisemedia.onrender.com',
+                description: 'Production server',
+            }
         ],
         components: {
             securitySchemes: {
