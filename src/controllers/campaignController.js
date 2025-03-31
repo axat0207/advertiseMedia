@@ -43,7 +43,8 @@ const createCampaign = async (req, res) => {
 const getAllCampaigns = async (req, res) => {
     try {
         const campaigns = await Campaign.find()
-            .select('campaignName campaignType status analytics headline body callToAction imageUrl')
+            .populate('advertiser', 'userId fullName companyName')
+            .select('campaignName campaignType status analytics headline body callToAction imageUrl advertiser')
             .sort({ createdAt: -1 });
         
         res.json(campaigns);
@@ -57,12 +58,13 @@ const getAllCampaigns = async (req, res) => {
 const getCampaign = async (req, res) => {
     try {
         const campaign = await Campaign.findById(req.params.id)
-            .select('campaignName campaignType status analytics headline body callToAction imageUrl');
-
+            .populate('advertiser', 'userId fullName companyName')
+            .select('campaignName campaignType status analytics headline body callToAction imageUrl advertiser');
+        
         if (!campaign) {
             return res.status(404).json({ message: 'Campaign not found' });
         }
-
+        
         res.json(campaign);
     } catch (error) {
         console.error('Error fetching campaign:', error);

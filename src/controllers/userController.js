@@ -95,7 +95,96 @@ const login = async (req, res) => {
     }
 };
 
+// Get All Users
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find()
+            .select('userId fullName email companyName role')
+            .sort({ createdAt: -1 });
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ message: 'Error fetching users' });
+    }
+};
+
+// Get User by ID
+const getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+            .select('userId fullName email companyName role');
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        res.json(user);
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ message: 'Error fetching user' });
+    }
+};
+
+// Update User
+const updateUser = async (req, res) => {
+    try {
+        const { fullName, companyName, email } = req.body;
+        
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if user is updating their own profile or is an admin
+        if (req.user.role !== 'ADMIN' && req.user.userId !== user.userId) {
+            return res.status(403).json({ message: 'Not authorized to update this user' });
+        }
+
+        user.fullName = fullName || user.fullName;
+        user.companyName = companyName || user.companyName;
+        user.email = email || user.email;
+
+        await user.save();
+        res.json({ message: 'User updated successfully', user });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ message: 'Error updating user' });
+    }
+};
+
+// Delete User
+const deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Error deleting user' });
+    }
+};
+
+// Logout
+const logout = async (req, res) => {
+    try {
+        // Since we're using JWT, we don't need to do anything server-side
+        // The client should remove the token from their storage
+        res.json({ message: 'Logged out successfully' });
+    } catch (error) {
+        console.error('Error during logout:', error);
+        res.status(500).json({ message: 'Error during logout' });
+    }
+};
+
 module.exports = {
     register,
-    login
+    login,
+    getAllUsers,
+    getUserById,
+    updateUser,
+    deleteUser,
+    logout
 }; 

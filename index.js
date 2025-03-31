@@ -7,6 +7,7 @@ const swaggerUi = require('swagger-ui-express');
 
 const authRoutes = require('./src/routes/authRoutes');
 const campaignRoutes = require('./src/routes/campaignRoutes');
+const userRoutes = require('./src/routes/userRoutes');
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/campaigns', campaignRoutes);
+app.use('/api/users', userRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
