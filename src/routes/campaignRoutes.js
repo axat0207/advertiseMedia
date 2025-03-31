@@ -141,7 +141,7 @@ router.post('/', isAuth, checkRole(['ADVERTISER']), upload.single('image'), crea
  *       403:
  *         description: Forbidden
  */
-router.get('/', isAuth, checkRole(['ADVERTISER']), getAllCampaigns);
+router.get('/', getAllCampaigns);
 
 /**
  * @swagger
@@ -171,7 +171,7 @@ router.get('/', isAuth, checkRole(['ADVERTISER']), getAllCampaigns);
  *       404:
  *         description: Campaign not found
  */
-router.get('/:id', isAuth, checkRole(['ADVERTISER']), getCampaign);
+router.get('/:id', getCampaign);
 
 /**
  * @swagger
