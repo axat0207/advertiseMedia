@@ -37,8 +37,8 @@ const campaignSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['ACTIVE', 'PAUSED', 'COMPLETED'],
-        default: 'ACTIVE'
+        enum: ['PENDING', 'ACTIVE', 'PAUSED', 'COMPLETED'],
+        default: 'PENDING'
     },
     analytics: {
         impressions: {
@@ -66,4 +66,4 @@ campaignSchema.pre('save', function(next) {
     next();
 });
 
-module.exports = mongoose.model('Campaign', campaignSchema); 
+module.exports = mongoose.model('Campaign', campaignSchema);

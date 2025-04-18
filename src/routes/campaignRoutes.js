@@ -9,7 +9,8 @@ const {
     updateCampaign,
     deleteCampaign,
     getDashboardStats,
-    getCampaignAnalytics
+    getCampaignAnalytics,
+    updateCampaignStatus
 } = require('../controllers/campaignController');
 
 // Configure multer for file upload
@@ -70,7 +71,7 @@ const upload = multer({
  *           type: string
  *         status:
  *           type: string
- *           enum: [ACTIVE, PAUSED, COMPLETED]
+ *           enum: [PENDING, ACTIVE, PAUSED, COMPLETED]
  *         analytics:
  *           type: object
  *           properties:
@@ -352,4 +353,44 @@ router.get('/dashboard/stats', isAuth, checkRole(['ADVERTISER']), getDashboardSt
  */
 router.get('/:id/analytics', isAuth, checkRole(['ADVERTISER']), getCampaignAnalytics);
 
-module.exports = router; 
+/**
+ * @swagger
+ * /api/campaigns/{id}/status:
+ *   patch:
+ *     summary: Update campaign status (Admin only)
+ *     tags: [Campaigns]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [PENDING, ACTIVE, PAUSED, COMPLETED]
+ *     responses:
+ *       200:
+ *         description: Campaign status updated successfully
+ *       400:
+ *         description: Invalid status value
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       404:
+ *         description: Campaign not found
+ */
+router.patch('/:id/status', isAuth, checkRole(['ADMIN']), updateCampaignStatus);
+
+module.exports = router;

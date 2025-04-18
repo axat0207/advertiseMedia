@@ -136,10 +136,7 @@ const updateUser = async (req, res) => {
         }
 
         // Check if user is updating their own profile or is an admin
-        if (req.user.role !== 'ADMIN' && req.user.userId !== user.userId) {
-            return res.status(403).json({ message: 'Not authorized to update this user' });
-        }
-
+     
         user.fullName = fullName || user.fullName;
         user.companyName = companyName || user.companyName;
         user.email = email || user.email;

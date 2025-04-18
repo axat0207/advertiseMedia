@@ -186,6 +186,40 @@ const getCampaignAnalytics = async (req, res) => {
     }
 };
 
+// Update Campaign Status (Admin only)
+const updateCampaignStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        
+        // Validate status
+        const validStatuses = ['PENDING', 'ACTIVE', 'PAUSED', 'COMPLETED'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Invalid status value' });
+        }
+
+        const campaign = await Campaign.findByIdAndUpdate(
+            req.params.id,
+            { status },
+            { new: true }
+        );
+
+        if (!campaign) {
+            return res.status(404).json({ message: 'Campaign not found' });
+        }
+
+        res.json({
+            message: 'Campaign status updated successfully',
+            campaign: {
+                id: campaign._id,
+                status: campaign.status
+            }
+        });
+    } catch (error) {
+        console.error('Error updating campaign status:', error);
+        res.status(500).json({ message: 'Error updating campaign status' });
+    }
+};
+
 module.exports = {
     createCampaign,
     getAllCampaigns,
@@ -193,5 +227,6 @@ module.exports = {
     updateCampaign,
     deleteCampaign,
     getDashboardStats,
-    getCampaignAnalytics
-}; 
+    getCampaignAnalytics,
+    updateCampaignStatus
+};
