@@ -11,8 +11,17 @@ const userRoutes = require('./src/routes/userRoutes');
 
 const app = express();
 
+// CORS Configuration
+const corsOptions = {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    credentials: false // Must be false when using origin: '*'
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Swagger configuration
@@ -89,4 +98,4 @@ mongoose.connect(process.env.MONGODB_URI)
     .catch((error) => {
         console.error('Error connecting to MongoDB:', error);
         process.exit(1);
-    }); 
+    });
