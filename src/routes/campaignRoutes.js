@@ -165,104 +165,6 @@ router.get('/', getAllCampaigns);
 
 /**
  * @swagger
- * /api/campaigns/{id}:
- *   get:
- *     summary: Get campaign details
- *     tags: [Campaigns]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Campaign details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Campaign'
- *       404:
- *         description: Campaign not found
- */
-router.get('/:id', getCampaign);
-
-/**
- * @swagger
- * /api/campaigns/{id}:
- *   put:
- *     summary: Update campaign
- *     tags: [Campaigns]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               campaignName:
- *                 type: string
- *               campaignDescription:
- *                 type: string
- *               campaignType:
- *                 type: string
- *                 enum: [BANNER, FEATURED, INTERACTIVE]
- *               headline:
- *                 type: string
- *               body:
- *                 type: string
- *               callToAction:
- *                 type: string
- *               image:
- *                 type: string
- *                 format: binary
- *     responses:
- *       200:
- *         description: Campaign updated successfully
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden
- *       404:
- *         description: Campaign not found
- */
-router.put('/:id', isAuth, checkRole(['ADVERTISER']), upload.single('image'), updateCampaign);
-
-/**
- * @swagger
- * /api/campaigns/{id}:
- *   delete:
- *     summary: Delete campaign
- *     tags: [Campaigns]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Campaign deleted successfully
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden
- *       404:
- *         description: Campaign not found
- */
-router.delete('/:id', isAuth, checkRole(['ADVERTISER']), deleteCampaign);
-
-/**
- * @swagger
  * /api/campaigns/dashboard/stats:
  *   get:
  *     summary: Get dashboard statistics
@@ -352,7 +254,7 @@ router.get('/dashboard/stats', isAuth, checkRole(['ADVERTISER']), getDashboardSt
  *       404:
  *         description: Campaign not found
  */
-router.get('/:id/analytics', isAuth, checkRole(['ADVERTISER']), getCampaignAnalytics);
+router.get('/:id/analytics', isAuth, getCampaignAnalytics);
 
 /**
  * @swagger
@@ -397,7 +299,7 @@ router.get('/:id/analytics', isAuth, checkRole(['ADVERTISER']), getCampaignAnaly
  *       404:
  *         description: Campaign not found
  */
-router.put('/:id/analytics', isAuth, checkRole(['ADVERTISER']), updateCampaignAnalytics);
+router.put('/:id/analytics', isAuth, updateCampaignAnalytics);
 
 /**
  * @swagger
@@ -437,6 +339,6 @@ router.put('/:id/analytics', isAuth, checkRole(['ADVERTISER']), updateCampaignAn
  *       404:
  *         description: Campaign not found
  */
-router.put('/:id/status', isAuth, checkRole(['ADMIN']), updateCampaignStatus);
+router.put('/:id/status', isAuth, updateCampaignStatus);
 
 module.exports = router;
