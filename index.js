@@ -10,14 +10,16 @@ const campaignRoutes = require('./src/routes/campaignRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 
 const app = express();
-console.log("Hello world")
+
 // CORS Configuration
 const corsOptions = {
-    origin: '*',
+    origin: ['http://localhost:3000', 'https://advertisemedia.onrender.com'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
-    credentials: false // Must be false when using origin: '*'
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 };
 
 // Middleware

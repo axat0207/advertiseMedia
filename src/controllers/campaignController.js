@@ -220,6 +220,59 @@ const updateCampaignStatus = async (req, res) => {
     }
 };
 
+// Update Campaign Analytics
+const updateCampaignAnalytics = async (req, res) => {
+    try {
+        const { impressions, clicks } = req.body;
+        
+        // Validate input
+        if (typeof impressions !== 'number' || typeof clicks !== 'number') {
+            return res.status(400).json({ message: 'Impressions and clicks must be numbers' });
+        }
+
+        if (impressions < 0 || clicks < 0) {
+            return res.status(400).json({ message: 'Impressions and clicks cannot be negative' });
+        }
+
+        if (clicks > impressions) {
+            return res.status(400).json({ message: 'Clicks cannot be greater than impressions' });
+        }
+
+        const campaign = await Campaign.findOne({
+            _id: req.params.id,
+            advertiser: req.user.userId
+        });
+
+        if (!campaign) {
+            return res.status(404).json({ message: 'Campaign not found' });
+        }
+
+        // Calculate CTR
+        const ctr = impressions > 0 ? (clicks / impressions) * 100 : 0;
+
+        // Update analytics
+        campaign.analytics = {
+            impressions,
+            clicks,
+            ctr
+        };
+
+        await campaign.save();
+
+        res.json({
+            message: 'Campaign analytics updated successfully',
+            analytics: {
+                impressions: campaign.analytics.impressions,
+                clicks: campaign.analytics.clicks,
+                ctr: campaign.analytics.ctr.toFixed(2)
+            }
+        });
+    } catch (error) {
+        console.error('Error updating campaign analytics:', error);
+        res.status(500).json({ message: 'Error updating campaign analytics' });
+    }
+};
+
 module.exports = {
     createCampaign,
     getAllCampaigns,
@@ -228,5 +281,6 @@ module.exports = {
     deleteCampaign,
     getDashboardStats,
     getCampaignAnalytics,
-    updateCampaignStatus
+    updateCampaignStatus,
+    updateCampaignAnalytics
 };

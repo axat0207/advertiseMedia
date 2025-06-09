@@ -10,7 +10,8 @@ const {
     deleteCampaign,
     getDashboardStats,
     getCampaignAnalytics,
-    updateCampaignStatus
+    updateCampaignStatus,
+    updateCampaignAnalytics
 } = require('../controllers/campaignController');
 
 // Configure multer for file upload
@@ -355,8 +356,53 @@ router.get('/:id/analytics', isAuth, checkRole(['ADVERTISER']), getCampaignAnaly
 
 /**
  * @swagger
+ * /api/campaigns/{id}/analytics:
+ *   put:
+ *     summary: Update campaign analytics
+ *     tags: [Campaigns]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - impressions
+ *               - clicks
+ *               - ctr
+ *             properties:
+ *               impressions:
+ *                 type: number
+ *               clicks:
+ *                 type: number
+ *               ctr:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Campaign analytics updated successfully
+ *       400:
+ *         description: Invalid analytics format
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Campaign not found
+ */
+router.put('/:id/analytics', isAuth, checkRole(['ADVERTISER']), updateCampaignAnalytics);
+
+/**
+ * @swagger
  * /api/campaigns/{id}/status:
- *   patch:
+ *   put:
  *     summary: Update campaign status (Admin only)
  *     tags: [Campaigns]
  *     security:
@@ -391,6 +437,6 @@ router.get('/:id/analytics', isAuth, checkRole(['ADVERTISER']), getCampaignAnaly
  *       404:
  *         description: Campaign not found
  */
-router.patch('/:id/status', isAuth, checkRole(['ADMIN']), updateCampaignStatus);
+router.put('/:id/status', isAuth, checkRole(['ADMIN']), updateCampaignStatus);
 
 module.exports = router;
