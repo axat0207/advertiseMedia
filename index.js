@@ -13,7 +13,7 @@ const app = express();
 
 // CORS Configuration
 const corsOptions = {
-    origin: ['http://localhost:3000', 'https://advertisemedia.onrender.com'],
+    origin: ['http://localhost:3000', 'https://advertisemedia.onrender.com', 'https://advertiseing-hub.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
