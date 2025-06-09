@@ -165,6 +165,30 @@ router.get('/', getAllCampaigns);
 
 /**
  * @swagger
+ * /api/campaigns/{id}:
+ *   get:
+ *     summary: Get campaign details
+ *     tags: [Campaigns]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Campaign details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Campaign'
+ *       404:
+ *         description: Campaign not found
+ */
+router.get('/:id', getCampaign);
+
+/**
+ * @swagger
  * /api/campaigns/dashboard/stats:
  *   get:
  *     summary: Get dashboard statistics
