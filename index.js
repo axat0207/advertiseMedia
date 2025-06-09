@@ -10,7 +10,7 @@ const campaignRoutes = require('./src/routes/campaignRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 
 const app = express();
-
+console.log("Hello world")
 // CORS Configuration
 const corsOptions = {
     origin: '*',
