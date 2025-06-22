@@ -11,7 +11,8 @@ const {
     getDashboardStats,
     getCampaignAnalytics,
     updateCampaignStatus,
-    updateCampaignAnalytics
+    updateCampaignAnalytics,
+    updateCampaignDetails
 } = require('../controllers/campaignController');
 
 // Configure multer for file upload
@@ -364,5 +365,56 @@ router.put('/:id/analytics', isAuth, updateCampaignAnalytics);
  *         description: Campaign not found
  */
 router.put('/:id/status', isAuth, updateCampaignStatus);
+
+/**
+ * @swagger
+ * /api/campaigns/{id}/details:
+ *   put:
+ *     summary: Update campaign details (JSON, no image)
+ *     tags: [Campaigns]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               campaignName:
+ *                 type: string
+ *               campaignDescription:
+ *                 type: string
+ *               campaignType:
+ *                 type: string
+ *                 enum: [BANNER, FEATURED, INTERACTIVE]
+ *               headline:
+ *                 type: string
+ *               body:
+ *                 type: string
+ *               callToAction:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *                 enum: [PENDING, ACTIVE, PAUSED, COMPLETED]
+ *     responses:
+ *       200:
+ *         description: Campaign details updated successfully
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Campaign not found
+ */
+router.put('/:id/details', isAuth, checkRole(['ADVERTISER', 'ADMIN']), updateCampaignDetails);
 
 module.exports = router;

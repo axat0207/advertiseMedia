@@ -272,6 +272,28 @@ const updateCampaignAnalytics = async (req, res) => {
     }
 };
 
+// Update Campaign Details (JSON, no image upload)
+const updateCampaignDetails = async (req, res) => {
+    try {
+        const updateData = req.body;
+        const campaign = await Campaign.findByIdAndUpdate(
+            req.params.id,
+            updateData,
+            { new: true }
+        );
+        if (!campaign) {
+            return res.status(404).json({ message: 'Campaign not found' });
+        }
+        res.json({
+            message: 'Campaign details updated successfully',
+            campaign
+        });
+    } catch (error) {
+        console.error('Error updating campaign details:', error);
+        res.status(500).json({ message: 'Error updating campaign details' });
+    }
+};
+
 module.exports = {
     createCampaign,
     getAllCampaigns,
@@ -281,5 +303,6 @@ module.exports = {
     getDashboardStats,
     getCampaignAnalytics,
     updateCampaignStatus,
-    updateCampaignAnalytics
+    updateCampaignAnalytics,
+    updateCampaignDetails
 };
