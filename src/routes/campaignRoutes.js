@@ -324,7 +324,7 @@ router.get('/:id/analytics', isAuth, getCampaignAnalytics);
  *       404:
  *         description: Campaign not found
  */
-router.put('/:id/analytics', isAuth, updateCampaignAnalytics);
+router.put('/:id/analytics',  updateCampaignAnalytics);
 
 /**
  * @swagger
