@@ -222,28 +222,30 @@ const updateCampaignStatus = async (req, res) => {
 // Update Campaign Analytics
 const updateCampaignAnalytics = async (req, res) => {
     try {
-        const { impressions, clicks } = req.body;
+        const { clicks } = req.body;
         
         // Validate input
-        if (typeof impressions !== 'number' || typeof clicks !== 'number') {
-            return res.status(400).json({ message: 'Impressions and clicks must be numbers' });
+        if (typeof clicks !== 'number') {
+            return res.status(400).json({ message: 'Clicks must be a number' });
         }
 
-        if (impressions < 0 || clicks < 0) {
-            return res.status(400).json({ message: 'Impressions and clicks cannot be negative' });
-        }
-
-        if (clicks > impressions) {
-            return res.status(400).json({ message: 'Clicks cannot be greater than impressions' });
+        if (clicks < 0) {
+            return res.status(400).json({ message: 'Clicks cannot be negative' });
         }
 
         const campaign = await Campaign.findOne({
             _id: req.params.id,
-            advertiser: req.user.userId
         });
 
         if (!campaign) {
             return res.status(404).json({ message: 'Campaign not found' });
+        }
+
+        // Increment impressions by one
+        const impressions = (campaign.analytics.impressions || 0) + 1;
+
+        if (clicks > impressions) {
+            return res.status(400).json({ message: 'Clicks cannot be greater than impressions' });
         }
 
         // Calculate CTR
